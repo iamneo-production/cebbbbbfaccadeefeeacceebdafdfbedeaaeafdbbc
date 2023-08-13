@@ -1,100 +1,97 @@
-import styles from "./App.module.css";
-import Banner from "./Componets/UI/Banner/Banner";
-import { useState } from "react";
-import Button from "./Componets/UI/Button/Button";
-import QuizData from "./Data/Data";
-import Card from "./Componets/UI/Card/Card";
-
-const resultBanner = {
-  backgroundColor: "#FA5F55",
-  borderRadius: "2%",
-  fontWeight: "bold",
-};
-
-const startButtonStyle = {
-  backgroundColor: "#FFDBAC",
-  textAlign: "center",
-  width: "100%",
-};
-
-const optionsButtonStyle = {
-  backgroundColor: "#FFDBAC",
-  textAlign: "center",
-  width: "100%",
-};
-
-const showResultButtonStyle = {
-  backgroundColor: "green",
-  textAlign: "center",
-  color: "white",
-};
+import './App.css';
+import React , {useState} from 'react';
+import Card from "./components/UI/Card/Card"
 
 function App() {
-  const [showResult, setShowResult] = useState(false);
-  const [showStartBtn, setShowStartBtn] = useState(true);
-  const [countCorrectAnswers, setCountCorrectAnswers] = useState(0);
-
-  function onClickHandler() {
-    setShowStartBtn(!showStartBtn);
-    setShowResult(false);
-    setCountCorrectAnswers(0);
+  const [showQuestion ,setShowQuestions] = useState(false);
+  const [questionsCorrect, setquestionsCorrect] = useState(0);
+  const [showQuiz, setShowQuiz] = useState(false);
+  
+  function handleStartQuiz(){
+    setShowQuestions(true);
+    setShowQuiz(false);
   }
-
-  function showResultHandler() {
-    setShowStartBtn(!showStartBtn);
-    setShowResult(false);
-    setShowResult(true);
+  const questions = [
+    {
+      quesId: 1,
+      ques: 'What color is the sky?',
+      Options: {
+        option1: 'Blue',
+        option2: 'Red',
+        option3: 'Yellow',
+        option4: 'Green',
+      },
+      answer: 'Blue',
+    },
+    {
+      quesId: 2,
+      ques: 'What color is are the leaves ?',
+      Options: {
+        option1: 'Blue',
+        option2: 'Red',
+        option3: 'Yellow',
+        option4: 'Green',
+      },
+      answer: 'Green',
+    },
+    {
+      quesId: 3,
+      ques: 'What color is the sun?',
+      Options: {
+        option1: 'Blue',
+        option2: 'Red',
+        option3: 'Yellow',
+        option4: 'Green',
+      },
+      answer: 'Yellow',
+    },
+  ]
+  const handleCorrectAnswerMarkUpdate = (isCorrect) => {
+    console.log(isCorrect);
+    if(isCorrect){
+      setquestionsCorrect(questionsCorrect + 1);
+    }
   }
-
+  const showResults = () => {
+    console.log("Show Results", questionsCorrect);
+    setShowQuiz(true);
+  }
   return (
-    <div className={styles.Wrapper}>
+    <div className="App">
       <h1>Quizz App</h1>
-
-      <ResultBanner showResult={showResult} result={countCorrectAnswers} />
-
-      <div className={styles.StartButton} onClick={onClickHandler}>
-        {showStartBtn && (
-          <Button buttonText={"Start Quiz"} ButtonStyle={startButtonStyle} />
-        )}
-      </div>
-
-      {!showStartBtn && (
-        <div className={styles.QuizDataContainer}>
-          {QuizData.map((value, index) => {
-            return (
-              <Card
-                key={index}
-                value={value}
-                ButtonStyle={optionsButtonStyle}
-                countCorrectAnswers={countCorrectAnswers}
-                setCountCorrectAnswers={setCountCorrectAnswers}
+      {
+        !showQuestion ? 
+        (
+          <button className='Startbtn' onClick={handleStartQuiz}>Start Quiz</button>
+        )
+        :
+        showQuiz===false?
+        (
+          <>
+          <div className="container">
+            {questions.map((item) => (
+              <Card 
+                key={item.quesId}
+                question={item.ques}
+                correctAnswerMarkUpdate={handleCorrectAnswerMarkUpdate}
+                attempt={"ka"}
+                options={item.Options}
+                answer={item.answer}
               />
-            );
-          })}
-        </div>
-      )}
-      {!showStartBtn && (
-        <div className={styles.ShowResultButton} onClick={showResultHandler}>
-          <Button
-            buttonText={"Show Result"}
-            ButtonStyle={showResultButtonStyle}
-          />
-        </div>
-      )}
+            ))}
+          </div>
+            <button onClick={showResults} className='ResultBtn'>Show Results</button>
+          </>
+        )
+        :
+        (
+          <div className='ResultDiv'>
+            <h1 className='ResultText'>You have answered {questionsCorrect} / {questions.length} Correctly</h1>
+            <button className='Startbtn' onClick={handleStartQuiz}>Start Quiz</button>
+          </div>  
+        )
+      }
     </div>
-  );
-}
-
-function ResultBanner({ showResult, result }) {
-  return (
-    <>
-      {showResult && (
-        <Banner
-          styleObject={resultBanner}
-          text={`You have answered ${result}/5 correctly`}
-        />
-      )}
-    </>
   );
 }
 

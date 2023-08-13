@@ -1,32 +1,43 @@
-import { useState } from "react";
-import Button from "../Button/Button";
-import styles from "./Card.module.css";
+import React, { useState } from "react";
+import "./Card.css";
 
 const Card = (props) => {
-  const [disabled, setDisabled] = useState(false);
+  const [isDisabled, setDisabled] = useState(false);
+  const [questionsAnswered, setQuestionsAnswered] = useState(0);
+  const [showResults, setShowResults] = useState(false);
 
-  const getSelectedValue = (option) => {
+  function handleQuestionAnswered() {
+      setQuestionsAnswered(questionsAnswered + 1);
+  }
+
+  function handleShowResults() {
+      setShowResults(true);
+  }
+
+  const optionClickHandler = (answer) => {
     setDisabled(true);
-    if (props.value.correctAnswer === option) {
-      props.setCountCorrectAnswers(props.countCorrectAnswers + 1);
+    if (answer === props.answer) {
+      props.correctAnswerMarkUpdate(true);
+    }
+    else{
+      props.correctAnswerMarkUpdate(false);
     }
   };
 
   return (
-    <div className={styles.cardContainer}>
-      <div className={styles.question}>{props.value.Question}</div>
-      <div className={styles.options}>
-        {props.value.options.map((option, index) => {
-          return (
-            <div key={index} onClick={() => getSelectedValue(option)}>
-              <Button
-                buttonText={option}
-                ButtonStyle={props.ButtonStyle}
-                disabled={disabled}
-              />
-            </div>
-          );
-        })}
+    <div className="container-2">
+      <h4 className="quesClass">{props.question}</h4>
+      <div >
+        {Object.keys(props.options).map((key) => (
+          <button
+            key={key}
+            disabled={isDisabled}
+            onClick={() => optionClickHandler(props.options[key])}
+            className="OptionBtn"
+          >
+            {props.options[key]}
+          </button>
+        ))}
       </div>
     </div>
   );

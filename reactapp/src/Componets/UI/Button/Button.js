@@ -1,17 +1,7 @@
-import styles from "./Button.module.css";
+import React from "react";
 
 const Button = (props) => {
-  return (
-    <>
-      <button
-        className={styles.ButtonContainer}
-        style={props.ButtonStyle}
-        disabled={props.disabled}
-      >
-        {props.buttonText}
-      </button>
-    </>
-  );
+  return <button>{props.children}</button>;
 };
 
 export default Button;
